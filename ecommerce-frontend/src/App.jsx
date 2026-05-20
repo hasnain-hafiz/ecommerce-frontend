@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import api from './api/axios';
 import Authentication from './pages/Authentication';
 import { useEffect } from 'react';
 import './App.css'

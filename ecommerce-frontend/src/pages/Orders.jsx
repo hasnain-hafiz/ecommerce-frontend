@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import api from "../api/axios";
+import { privateApi } from "../api/axios";
 import OrderCard from "../components/OrderCard";
 
 export default function Orders() {
@@ -13,7 +13,7 @@ export default function Orders() {
 
         setLoading(true);
         try {
-            const res = await api.get("/order/all");
+            const res = await privateApi.get("/order/all");
             setOrders(res.data.data);
         }
         finally {

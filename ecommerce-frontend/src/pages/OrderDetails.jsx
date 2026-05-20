@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../api/axios";
+import { privateApi } from "../api/axios";
 
 export default function OrderDetails(){
     const {id } = useParams();
@@ -10,7 +10,7 @@ export default function OrderDetails(){
     const fetchOrder = async ()=>{
         setLoading(true);
         try{
-            const res = await api.get(`/order/${id}`);
+            const res = await privateApi.get(`/order/${id}`);
             setOrder(res.data.data);
         }
         catch(err){

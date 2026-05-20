@@ -3,7 +3,8 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../api/axios";
+import { publicApi } from "../api/axios";
+
 
 export default function Login() {
     const [userData, setUserData] = useState({})
@@ -26,7 +27,7 @@ export default function Login() {
         try {
             for (let attempt = 0; attempt < 3; attempt++) {
                 try {
-                    const res = await api.post("/auth/authenticate", userData);
+                    const res = await publicApi.post("/auth/authenticate", userData);
                     console.log(res);
                     login(res.data.data); //res.data.data = token
                     toast.update(toastId, {

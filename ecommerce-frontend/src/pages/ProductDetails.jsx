@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import api from "../api/axios";
+import { publicApi } from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
@@ -19,7 +19,7 @@ export default function ProductDetails() {
 
   const fetchProduct = async () => {
     try {
-      const res = await api.get(`/product/${id}`);
+      const res = await publicApi.get(`/product/${id}`);
       setProduct(res.data.data);
     } catch (err) {
       console.error(err);

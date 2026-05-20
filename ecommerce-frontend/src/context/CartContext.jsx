@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api/axios";
+import { privateApi, publicApi } from "../api/axios";
 import { AuthContext } from "./AuthContext";
 import { toast } from "react-toastify";
 
@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
 
         setLoading(true);
         try {
-            const res = await api.get("/cart/my");
+            const res = await privateApi.get("/cart/my");
             setCart(res.data.data);
            
         } catch (err) {
@@ -32,7 +32,7 @@ export const CartProvider = ({ children }) => {
     // ✅ Add Item
     const addToCart = async (productId) => {
         try {
-            const res = await api.post(`/cart/items/${productId}`);
+            const res = await privateApi.post(`/cart/items/${productId}`);
         
             setCart(res.data.data);
             toast.success("Added to cart");
@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
     // ✅ Update Quantity
     const updateQuantity = async (productId, quantity) => {
         try {
-            const res = await api.put(`/cart/items/${productId}?quantity=${quantity}`);
+            const res = await privateApi.put(`/cart/items/${productId}?quantity=${quantity}`);
             setCart(res.data.data);
         } catch (err) {
             console.log(err)
@@ -55,7 +55,7 @@ export const CartProvider = ({ children }) => {
     // ✅ Remove Item
     const removeFromCart = async (productId) => {
         try {
-            const res = await api.delete(`/cart/items/${productId}`);
+            const res = await privateApi.delete(`/cart/items/${productId}`);
             console.log(res);
             setCart(res.data.data);
         } catch (err) {
@@ -67,7 +67,7 @@ export const CartProvider = ({ children }) => {
     // ✅ Clear Cart
     const clearCart = async () => {
         try {
-            await api.delete("/cart/clear");
+            await privateApi.delete("/cart/clear");
             setCart(null);
         } catch (err) {
             toast.error("Failed to clear cart");

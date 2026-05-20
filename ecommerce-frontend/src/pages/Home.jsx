@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import api from "../api/axios";
+import { publicApi } from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import Authentication from "./Authentication";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ export default function Home() {
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [search, setSearch] = useState("");
     const { token } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -16,7 +17,7 @@ export default function Home() {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const res = await api.get("/product/all");
+            const res = await publicApi.get("/product/all");
             setProducts(res.data.data);
             console.log(res);
         }
@@ -24,6 +25,16 @@ export default function Home() {
         finally {
             setLoading(false);
         }
+    };
+
+     const searchProducts = async () => {
+        if (!search.trim()) return fetchNotes();
+        const res = await publicApi.get(`/product/search?keyword=${search}`);
+        setProducts(res.data.data);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") searchProducts();
     };
 
     useEffect(() => {
@@ -43,8 +54,21 @@ export default function Home() {
             <div className="top-bar">
                 <h2>My E-Commerce</h2>
                 <div className="search-box">
-                    <input type="text" placeholder="Search Products" />
-                    <button>Search</button>
+
+                     <span className="search-icon">⌕</span>
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    {search && (
+                        <button className="search-clear" onClick={() => { setSearch(""); fetchProducts(); }}>
+                            ✕
+                        </button>
+                    )}
+                    <button className="search-btn" onClick={searchProducts}>Search</button>
                 </div>
                 <button onClick={() => navigate(token ? "/cart" : "/auth")}>
                     {token ? "My Cart" : "Login"}

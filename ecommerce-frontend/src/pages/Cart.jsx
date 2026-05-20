@@ -1,7 +1,7 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { privateApi } from "../api/axios";
 import { toast } from "react-toastify";
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,9 +18,7 @@ export default function Cart() {
 
     const placeOrder= async ()=>{
         try{
-            console.log("here")
-            const res = await api.post("/order/placeOrder");
-            console.log("here 2")
+            const res = await privateApi.post("/order/placeOrder");
             toast.success("order placed successfully");
             const order = res.data.data;
             

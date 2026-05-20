@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import api from "../api/axios";
+import  { publicApi } from "../api/axios";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 import { AuthContext } from "../context/AuthContext";
@@ -18,7 +18,7 @@ export default function Authentication() {
         const warmUp = async () => {
             
             try {
-                const response = await api.get("/auth/warmup");
+                const response = await publicApi.get("/auth/warmup");
                 if (response.status === 200) {
                     toast.update(toastId, {
                         render: "Server is Online 🎉",

@@ -2,11 +2,18 @@ import axios from "axios";
 import { toast } from "react-toastify";
 const API = import.meta.env.VITE_API_BASE_URL;
 
-const api = axios.create({
+
+
+export const publicApi = axios.create({
     baseURL: `${API}/api/v1`
 });
 
-api.interceptors.request.use((config) => {
+export const privateApi = axios.create({
+    baseURL: `${API}/api/v1`
+});
+
+
+privateApi.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -14,17 +21,16 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// api.interceptors.response.use(
-//     (response) => response,
-//     (error) => {
-//         if(error.response && error.response.status ===401){
-//             localStorage.removeItem("token");
-//             window.location.href="/auth";
-//         }
+privateApi.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if(error.response && error.response.status ===500){
+            localStorage.removeItem("token");
+           
+        }
 
-//         return Promise.reject(error);
-//     }
-// )
+        return Promise.reject(error);
+    }
+)
 
 
-export default api;
