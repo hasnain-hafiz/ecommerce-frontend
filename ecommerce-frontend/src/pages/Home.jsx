@@ -32,7 +32,7 @@ export default function Home() {
     };
 
     const searchProducts = async () => {
-        if (!search.trim()) return fetchNotes();
+        if (!search.trim()) return fetchProducts();
         const res = await publicApi.get(`/product/search?keyword=${search}`);
         setProducts(res.data.data);
     };

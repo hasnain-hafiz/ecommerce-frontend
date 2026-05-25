@@ -21,6 +21,8 @@ export default function Cart() {
             const res = await privateApi.post("/order/placeOrder");
             toast.success("order placed successfully");
             const order = res.data.data;
+
+            clearCart();
             
             navigate(`/order/${order.id}`);
         }

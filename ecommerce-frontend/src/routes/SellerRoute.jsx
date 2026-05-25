@@ -4,10 +4,17 @@ import { AuthContext } from "../context/AuthContext";
 
 export default function SellerRoute() {
     const { token, seller } = useContext(AuthContext);
+ 
 
     if (!token) {
         return <Navigate to="/auth" replace />;
     }
+
+    if (!seller) {
+      
+        return <Navigate to="/" replace />;
+    }
+    
 
     return seller
         ? <Outlet />

@@ -44,8 +44,10 @@ export default function Authentication() {
     return (
         <div className="auth-container">
             <div className="auth-card">
-                <h3 className="auth-title">Welcome</h3>
 
+                <h3 className="auth-title">Welcome</h3>
+                <p className="auth-subtitle">Sign in to continue shopping</p>
+                
                 <div className="auth-toggle">
                     <button
                         className={mode === "signup" ? "active" : ""}

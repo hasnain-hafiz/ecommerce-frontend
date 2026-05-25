@@ -146,7 +146,7 @@ export default function EditProduct() {
                 placeholder="Inventory"
             />
 
-            <select name="Category"
+            <select name="category"
                 value={data.category}
                 onChange={handleChange}
 

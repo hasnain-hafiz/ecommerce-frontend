@@ -1,16 +1,29 @@
-import React, { createContext, useState } from "react";
-import { useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
-    const [seller, setSeller] = useState(localStorage.getItem("seller") || false);
 
+    const [token, setToken] = useState(
+        localStorage.getItem("token") || null
+    );
+
+    const [seller, setSeller] = useState(
+        JSON.parse(localStorage.getItem("seller")) || false
+    );
+    
     useEffect(() => {
-        const StoredToken = localStorage.getItem("token");
-        if (StoredToken) { setToken(StoredToken) }
-    }, [])
+        const storedToken = localStorage.getItem("token");
+        const storedSeller = localStorage.getItem("seller");
+
+        if (storedToken) {
+            setToken(storedToken);
+        }
+
+        if (storedSeller !== null) {
+            setSeller(JSON.parse(storedSeller));
+        }
+    }, []);
 
     const login = (token) => {
         localStorage.setItem("token", token);
@@ -19,21 +32,37 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("seller");
+
         setToken(null);
+        setSeller(false);
     };
 
-    const sellerIn = (seller) => {
-        localStorage.setItem("seller", seller)
-        setSeller(seller)
-    }
+    const sellerIn = (sellerValue) => {
+        localStorage.setItem(
+            "seller",
+            JSON.stringify(sellerValue)
+        );
+
+        setSeller(sellerValue);
+    };
 
     const sellerOut = () => {
-        localStorage.removeItem("seller")
+        localStorage.removeItem("seller");
         setSeller(false);
-    }
-        
+    };
+
     return (
-        <AuthContext.Provider value={{ token, seller, login, logout ,sellerIn, sellerOut }} >
+        <AuthContext.Provider
+            value={{
+                token,
+                seller,
+                login,
+                logout,
+                sellerIn,
+                sellerOut
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
