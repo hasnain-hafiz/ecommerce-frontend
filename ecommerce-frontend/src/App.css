@@ -235,8 +235,8 @@
   cursor: pointer;
   font-weight: bold;
 }
-
-/* ===== Cart/Login Button ===== */
+/* 
+===== Cart/Login Button ===== */
 .top-bar button:last-child {
   background-color: #232f3e;
   color: white;
@@ -758,3 +758,97 @@
   }
 }
 
+.details-image {
+  width: 100%;
+  max-width: 500px;
+}
+
+.slider-container {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.slider-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+
+  transition: transform 0.35s ease-in-out;
+}
+
+.main-image {
+  min-width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  background: white;
+  flex-shrink: 0;
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 42px;
+  height: 72px;
+
+  border: none;
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  font-size: 26px;
+  font-weight: bold;
+
+  z-index: 10;
+
+  transition: 0.2s;
+}
+
+.slide-btn:hover {
+  background: white;
+}
+
+.left {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.right {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+@media (max-width: 768px) {
+
+  .details-image {
+    max-width: 100%;
+  }
+
+  .slider-container {
+    aspect-ratio: 1 / 1;
+  }
+
+  .main-image {
+    padding: 12px;
+  }
+}

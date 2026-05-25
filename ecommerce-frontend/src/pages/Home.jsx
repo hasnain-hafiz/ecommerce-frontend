@@ -10,7 +10,10 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
+    const { logout } = useContext(AuthContext);
     const { token } = useContext(AuthContext);
+    const { seller } = useContext(AuthContext);
+    const { sellerOut } = useContext(AuthContext);
     const navigate = useNavigate();
 
 
@@ -27,7 +30,7 @@ export default function Home() {
         }
     };
 
-     const searchProducts = async () => {
+    const searchProducts = async () => {
         if (!search.trim()) return fetchNotes();
         const res = await publicApi.get(`/product/search?keyword=${search}`);
         setProducts(res.data.data);
@@ -41,7 +44,7 @@ export default function Home() {
         fetchProducts();
     }, []);
 
-   if (loading) {
+    if (loading) {
         return (
             <div className="products-loading">
                 Loading products...
@@ -49,13 +52,16 @@ export default function Home() {
         );
     }
 
+    
+
     return (
         <div className="home-page">
             <div className="top-bar">
                 <h2>My E-Commerce</h2>
+
                 <div className="search-box">
 
-                     <span className="search-icon">⌕</span>
+                    <span className="search-icon">⌕</span>
                     <input
                         type="text"
                         placeholder="Search products..."
@@ -70,12 +76,19 @@ export default function Home() {
                     )}
                     <button className="search-btn" onClick={searchProducts}>Search</button>
                 </div>
+
                 <button onClick={() => navigate(token ? "/cart" : "/auth")}>
                     {token ? "My Cart" : "Login"}
                 </button>
+
                 {token ? (
-                    <button onClick={()=> navigate("/orders")}>My Orders</button>
+                    <button onClick={() => navigate("/orders")}>My Orders</button>
                 ) : null}
+                {token && (
+                    <button className="logout-btn" onClick={logout} title="Sign out">
+                        ⎋ Sign out
+                    </button>
+                )}
             </div>
 
             <div className="product-list">

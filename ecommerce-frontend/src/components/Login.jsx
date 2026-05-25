@@ -12,6 +12,7 @@ export default function Login() {
 
 
     const { login } = useContext(AuthContext);
+    const { sellerIn } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const sleep = (ms) => new Promise(res => setTimeout(res, ms));
@@ -28,8 +29,10 @@ export default function Login() {
             for (let attempt = 0; attempt < 3; attempt++) {
                 try {
                     const res = await publicApi.post("/auth/authenticate", userData);
+
                     console.log(res);
-                    login(res.data.data); //res.data.data = token
+                    login(res.data.data.token);
+                    sellerIn(res.data.data.seller);
                     toast.update(toastId, {
                         render: res.data.message,
                         type: "success",

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Authentication() {
     const [mode, setMode] = useState("login");
+    
     const {token} = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -62,8 +63,10 @@ export default function Authentication() {
                 </div>
 
                 {mode === "login" && <Login />}
-                {mode === "signup" && <Signup />}
+                {mode === "signup" && <Signup  />}
+
             </div>
+            
         </div>
     );
 }

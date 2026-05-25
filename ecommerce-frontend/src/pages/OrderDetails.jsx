@@ -70,6 +70,7 @@ export default function OrderDetails(){
                     <div className="order-item-card" key={item.id}>
 
                         <div className="item-info">
+        
                             <h4>{item.productName}</h4>
 
                             <p>

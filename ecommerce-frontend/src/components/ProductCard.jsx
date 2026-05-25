@@ -5,45 +5,87 @@ import { AuthContext } from "../context/AuthContext";
 const API = import.meta.env.VITE_API_BASE_URL;
 // change when deployed
 
-export default function ProductCard({ product }) {
+export default function ProductCard({
+    product,
+    isSellerView = false,
+    onEdit,
+    onDelete
+}) {
 
     const navigate = useNavigate();
-    // const {fetchCart} = useContext(CartContext);
-    const { addToCart } = useContext(CartContext);
-    const { token } = useContext(AuthContext);
 
+    const { addToCart } = useContext(CartContext);
+
+    const { token, seller } = useContext(AuthContext);
 
     return (
-        <div>
-            <div className="product-card">
-                <div onClick={() => navigate(`/product/${product.id}`)} >
-                    <img
-                        src={`${API}${product.imageList?.[0]?.fileUrl}`}
-                        alt={product.name}
-                        className="product-img"
-                    />
 
-                    <div className="product-info">
-                        <h3 className="product-title">{product.name}</h3>
+        <div className="product-card">
 
-                        <p className="product-description">
-                            {product.description}
-                        </p>
+            <div
+                onClick={() => navigate(`/product/${product.id}`)}
+            >
 
-                        <div className="product-price">
-                            ₹{product.price}
-                        </div>
+                <img
+                    src={`${API}${product.imageList?.[0]?.fileUrl}`}
+                    alt={product.name}
+                    className="product-img"
+                />
 
+                <div className="product-info">
 
-                    </div>
+                    <h3>{product.name}</h3>
+
+                    <p>{product.description}</p>
+
+                    <div>₹{product.price}</div>
+
+                    {seller && (
+                        <p>stock: {product.inventory}</p>
+                    )}
+
                 </div>
-                <button className="product-btn"
-                    onClick={() => { if (!token) { navigate("/auth"); return; } addToCart(product.id) }}
+
+            </div>
+
+            {/* BUYER BUTTON */}
+            {!seller && (
+
+                <button
+                    className="product-btn"
+                    onClick={() => {
+
+                        if (!token) {
+                            navigate("/auth");
+                            return;
+                        }
+
+                        addToCart(product.id);
+                    }}
                 >
                     Add to Cart
                 </button>
+            )}
 
-            </div>
+            {/* SELLER BUTTONS */}
+            {isSellerView && (
+
+                <div className="seller-actions">
+
+                    <button
+                        onClick={onEdit}
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        onClick={onDelete}
+                    >
+                        Delete
+                    </button>
+
+                </div>
+            )}
 
         </div>
     );

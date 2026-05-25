@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import { publicApi } from "../api/axios";
 
 export default function Signup() {
-    const [userData, setUserData] = useState({})
+    const [userData, setUserData] = useState({seller: false})
+    const[seller,setSeller] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     const { login } = useContext(AuthContext);
+    const { sellerIn } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const sleep = (ms) => new Promise(res => setTimeout(res, ms));
@@ -25,9 +27,13 @@ export default function Signup() {
         try {
             for (let attempt = 0; attempt < 3; attempt++) {
                 try {
+                    
                     const res = await publicApi.post("/auth/register", userData);
+
                     console.log(res);
-                    login(res.data.data); //res.data.data = token
+                    login(res.data.data.token);
+                    sellerIn(res.data.data.seller);
+
                     toast.update(toastId, {
                         render: res.data.message,
                         type: "success",
@@ -109,6 +115,21 @@ export default function Signup() {
             <button className="btn-primary" disabled={isSubmitting}>
                 {isSubmitting ? "Signing up..." : "Signup"}
             </button>
+
+            <label className="auth-seller">
+                Are you a Seller?
+
+                <input
+                    type="checkbox"
+                    onChange={(e) =>
+                        setUserData(prev => ({
+                            ...prev,
+                            seller: e.target.checked
+                        }))
+                    }    
+                />
+            </label>
+            
         </form>
     );
 }

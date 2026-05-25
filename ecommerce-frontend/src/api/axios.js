@@ -1,7 +1,7 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const API = import.meta.env.VITE_API_BASE_URL;
-
 
 
 export const publicApi = axios.create({
@@ -26,7 +26,8 @@ privateApi.interceptors.response.use(
     (error) => {
         if(error.response && error.response.status ===500){
             localStorage.removeItem("token");
-           
+            localStorage.removeItem("seller");
+            window.location.href("/home");
         }
 
         return Promise.reject(error);
