@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import Authentication from "./Authentication";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { toast } from "react-toastify";
 
 export default function Home() {
 
