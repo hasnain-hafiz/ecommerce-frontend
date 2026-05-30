@@ -8,8 +8,9 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 export default function SellerDashboard() {
     const [mode, setMode] = useState();
-    const { seller } = useContext(AuthContext);
+    const { seller, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    
 
     if (!seller) {
         console.log(seller);
@@ -24,10 +25,16 @@ export default function SellerDashboard() {
             <div>
                 <button onClick={() => setMode("AddProduct")}>Add Product</button>
                 <button onClick={() => setMode("MyProducts")}>My Products</button>
+                {token && (
+                    <button className="logout-btn" onClick={logout} title="Sign out">
+                        ⎋ Sign out
+                    </button>
+                )}
             </div>
+            
 
             {mode === "AddProduct" && <AddProduct setMode={setMode} />}
-            {mode === "MyProducts" && <SellerProducts />}
+            {mode === "MyProducts" && <SellerProducts  />}
 
         </div>  
   );

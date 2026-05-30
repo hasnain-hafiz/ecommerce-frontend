@@ -111,6 +111,7 @@ export default function EditProduct() {
 
             <input
                 name="name"
+                type="text"
                 value={data.name}
                 onChange={handleChange}
                 placeholder="Name"
@@ -118,6 +119,7 @@ export default function EditProduct() {
 
             <input
                 name="brand"
+                type="text"
                 value={data.brand}
                 onChange={handleChange}
                 placeholder="Brand"

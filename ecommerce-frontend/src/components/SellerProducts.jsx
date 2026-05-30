@@ -54,7 +54,7 @@ export default function SellerProducts() {
     };
 
     if (loading) {
-        return <div>Loading products...</div>;
+        return <div className="products-loading">Loading products...</div>;
     }
 
     return (

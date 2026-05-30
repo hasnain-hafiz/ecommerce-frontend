@@ -10,12 +10,6 @@ export default function SellerRoute() {
         return <Navigate to="/auth" replace />;
     }
 
-    if (!seller) {
-      
-        return <Navigate to="/" replace />;
-    }
-    
-
     return seller
         ? <Outlet />
         : <Navigate to="/" replace />;
