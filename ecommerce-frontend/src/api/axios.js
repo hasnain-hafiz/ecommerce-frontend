@@ -27,7 +27,7 @@ privateApi.interceptors.response.use(
         if(error.response && error.response.status ===500){
             localStorage.removeItem("token");
             localStorage.removeItem("seller");
-            window.location.href("/home");
+            window.location.href = "/";
         }
 
         return Promise.reject(error);

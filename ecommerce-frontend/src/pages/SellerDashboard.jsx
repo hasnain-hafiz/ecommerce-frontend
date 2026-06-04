@@ -6,6 +6,7 @@ import Login from "../components/Login";
 import SellerProducts from "../components/SellerProducts";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function SellerDashboard() {
     const [mode, setMode] = useState();
@@ -15,7 +16,7 @@ export default function SellerDashboard() {
 
     if (!seller) {
         console.log(seller);
-        navigate("/");
+        return <Navigate to="/" replace />;
     }
     console.log("here 3")
 
