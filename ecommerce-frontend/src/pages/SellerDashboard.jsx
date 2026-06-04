@@ -6,9 +6,10 @@ import Login from "../components/Login";
 import SellerProducts from "../components/SellerProducts";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 export default function SellerDashboard() {
     const [mode, setMode] = useState();
-    const { seller, logout } = useContext(AuthContext);
+    const { seller, token, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     
 
@@ -16,6 +17,7 @@ export default function SellerDashboard() {
         console.log(seller);
         navigate("/");
     }
+    console.log("here 3")
 
     return (
         <div className="seller-dashboard">  
