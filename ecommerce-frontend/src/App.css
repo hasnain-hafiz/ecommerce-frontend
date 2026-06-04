@@ -1290,3 +1290,38 @@ form>button:disabled {
     padding: 28px 20px;
   }
 }
+
+@media (max-width: 768px) {
+
+  .top-bar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .top-bar h2 {
+    width: 100%;
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .search-box {
+    width: 100%;
+    max-width: 100%;
+    order: 2;
+  }
+
+  .search-btn {
+    padding: 5px 10px;
+  }
+
+  .top-bar>button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .logout-btn {
+    flex: 1;
+  }
+}
