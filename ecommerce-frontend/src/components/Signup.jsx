@@ -1,81 +1,57 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { publicApi } from "../api/axios";
 
 export default function Signup() {
-    const [userData, setUserData] = useState({seller: false})
-    const[seller,setSeller] = useState(false);
+    const [userData, setUserData] = useState({ seller: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-
     const { login } = useContext(AuthContext);
-    const { sellerIn } = useContext(AuthContext);
     const navigate = useNavigate();
-
-    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
     const handleSignup = async (e) => {
         e.preventDefault();
-
         setIsSubmitting(true);
-
-        const toastId = toast.loading("Signing in...")
+        const toastId = toast.loading("Signing up...");
 
         try {
-            for (let attempt = 0; attempt < 3; attempt++) {
-                try {
-                    
-                    const res = await publicApi.post("/auth/register", userData);
-
-                    console.log(res);
-                    login(res.data.data.token);
-                    sellerIn(res.data.data.seller);
-
-                    toast.update(toastId, {
-                        render: res.data.message,
-                        type: "success",
-                        isLoading: false,
-                        autoClose: 2000
-                    });
-                    navigate("/")
-                    return;
-
-                } catch (err) {
-                    if (attempt === 2) {
-                        toast.update(toastId, {
-                            render: err.response?.data?.message,
-                            type: "error",
-                            isLoading: false,
-                            autoClose: 2000
-                        })
-                    }
-                    else {
-                        await sleep(1500);
-                    }
-                }
-            }
-        }
-        finally {
+            const res = await publicApi.post("/auth/register", userData);
+            login(res.data.data);
+            toast.update(toastId, {
+                render: res.data.message,
+                type: "success",
+                isLoading: false,
+                autoClose: 2000,
+            });
+            navigate("/");
+        } catch (err) {
+            const fieldErrors = err.response?.data?.data;
+            const message =
+                typeof fieldErrors === "object" && fieldErrors !== null
+                    ? Object.values(fieldErrors)[0]
+                    : err.response?.data?.message || "Signup failed";
+            toast.update(toastId, {
+                render: message,
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
         <form onSubmit={handleSignup}>
-
             <div className="form-group">
                 <label>First Name</label>
                 <input
                     type="text"
                     placeholder="Enter first name"
-                    onChange={(e) =>
-                        setUserData(prev => ({ ...prev, firstName: e.target.value }))
-                    }
+                    onChange={(e) => setUserData((prev) => ({ ...prev, firstName: e.target.value }))}
                 />
-                {/* <span className="error-text">Error here</span> */}
             </div>
 
             <div className="form-group">
@@ -83,9 +59,7 @@ export default function Signup() {
                 <input
                     type="text"
                     placeholder="Enter last name"
-                    onChange={(e) =>
-                        setUserData(prev => ({ ...prev, lastName: e.target.value }))
-                    }
+                    onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
                 />
             </div>
 
@@ -94,9 +68,7 @@ export default function Signup() {
                 <input
                     type="email"
                     placeholder="Enter email"
-                    onChange={(e) =>
-                        setUserData(prev => ({ ...prev, email: e.target.value }))
-                    }
+                    onChange={(e) => setUserData((prev) => ({ ...prev, email: e.target.value }))}
                 />
             </div>
 
@@ -106,10 +78,11 @@ export default function Signup() {
                     type="password"
                     placeholder="Enter password"
                     minLength={8}
-                    onChange={(e) =>
-                        setUserData(prev => ({ ...prev, password: e.target.value }))
-                    }
+                    onChange={(e) => setUserData((prev) => ({ ...prev, password: e.target.value }))}
                 />
+                <span className="hint-text">
+                    8+ characters, with an uppercase letter, lowercase letter, digit, and symbol.
+                </span>
             </div>
 
             <button className="btn-primary" disabled={isSubmitting}>
@@ -118,18 +91,11 @@ export default function Signup() {
 
             <label className="auth-seller">
                 Are you a Seller?
-
                 <input
                     type="checkbox"
-                    onChange={(e) =>
-                        setUserData(prev => ({
-                            ...prev,
-                            seller: e.target.checked
-                        }))
-                    }    
+                    onChange={(e) => setUserData((prev) => ({ ...prev, seller: e.target.checked }))}
                 />
             </label>
-            
         </form>
     );
 }

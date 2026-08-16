@@ -3,9 +3,9 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function PrivateRoute() {
-    const { token } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
 
-    return token
-        ? <Outlet />
-        : <Navigate to="/auth" replace />;
+    if (loading) return null; // avoid a flash-redirect while /auth/me resolves
+
+    return user ? <Outlet /> : <Navigate to="/auth" replace />;
 }

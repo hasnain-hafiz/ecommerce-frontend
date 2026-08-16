@@ -6,14 +6,14 @@ import { toast } from "react-toastify";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     const [cart, setCart] = useState({});
     const [loading, setLoading] = useState(false);
 
     // ✅ Fetch Cart
     const fetchCart = async () => {
-        if (!token) return;
+        if (!user) return;
 
         setLoading(true);
         try {
@@ -76,7 +76,7 @@ export const CartProvider = ({ children }) => {
 
     useEffect(() => {
         fetchCart();
-    }, [token]);
+    }, [user]);
 
 
 

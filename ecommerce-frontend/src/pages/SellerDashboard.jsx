@@ -10,15 +10,13 @@ import { Navigate } from "react-router-dom";
 
 export default function SellerDashboard() {
     const [mode, setMode] = useState();
-    const { seller, token, logout } = useContext(AuthContext);
+    const { isSeller, user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     
 
-    if (!seller) {
-        console.log(seller);
+    if (!isSeller) {
         return <Navigate to="/" replace />;
     }
-    console.log("here 3")
 
     return (
         <div className="seller-dashboard">  
@@ -28,7 +26,7 @@ export default function SellerDashboard() {
             <div>
                 <button onClick={() => setMode("AddProduct")}>Add Product</button>
                 <button onClick={() => setMode("MyProducts")}>My Products</button>
-                {token && (
+                {user && (
                     <button className="logout-btn" onClick={logout} title="Sign out">
                         ⎋ Sign out
                     </button>

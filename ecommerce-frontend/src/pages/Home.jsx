@@ -11,10 +11,7 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
-    const { logout } = useContext(AuthContext);
-    const { token } = useContext(AuthContext);
-    const { seller } = useContext(AuthContext);
-    const { sellerOut } = useContext(AuthContext);
+    const { user, logout, isAdmin } = useContext(AuthContext);
     const navigate = useNavigate();
 
 
@@ -104,14 +101,17 @@ export default function Home() {
                     <button className="search-btn" onClick={searchProducts}>Search</button>
                 </div>
 
-                <button onClick={() => navigate(token ? "/cart" : "/auth")}>
-                    {token ? "My Cart" : "Login"}
+                <button onClick={() => navigate(user ? "/cart" : "/auth")}>
+                    {user ? "My Cart" : "Login"}
                 </button>
 
-                {token ? (
+                {user ? (
                     <button onClick={() => navigate("/orders")}>My Orders</button>
                 ) : null}
-                {token && (
+                {isAdmin && (
+                    <button onClick={() => navigate("/admin")}>Admin</button>
+                )}
+                {user && (
                     <button className="logout-btn" onClick={logout} title="Sign out">
                         ⎋ Sign out
                     </button>

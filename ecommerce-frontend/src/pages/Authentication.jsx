@@ -1,16 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import  { publicApi } from "../api/axios";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
-import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Authentication() {
     const [mode, setMode] = useState("login");
     
-    const {token} = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {

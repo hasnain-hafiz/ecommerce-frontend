@@ -16,7 +16,7 @@ export default function ProductCard({
 
     const { addToCart } = useContext(CartContext);
 
-    const { token, seller } = useContext(AuthContext);
+    const { user, isSeller } = useContext(AuthContext);
 
     return (
 
@@ -40,7 +40,7 @@ export default function ProductCard({
 
                     <div>₹{product.price}</div>
 
-                    {seller && (
+                    {isSeller && (
                         <p>stock: {product.inventory}</p>
                     )}
 
@@ -49,13 +49,13 @@ export default function ProductCard({
             </div>
 
             {/* BUYER BUTTON */}
-            {!seller && (
+            {!isSeller && (
 
                 <button
                     className="product-btn"
                     onClick={() => {
 
-                        if (!token) {
+                        if (!user) {
                             navigate("/auth");
                             return;
                         }

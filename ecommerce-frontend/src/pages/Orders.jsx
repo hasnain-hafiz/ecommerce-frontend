@@ -4,12 +4,12 @@ import { privateApi } from "../api/axios";
 import OrderCard from "../components/OrderCard";
 
 export default function Orders() {
-    const { token } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchOrders = async () => {
-        if (!token) { return };
+        if (!user) { return };
 
         setLoading(true);
         try {
@@ -23,7 +23,7 @@ export default function Orders() {
 
     useEffect(() => {
         fetchOrders();
-    }, []);
+    }, [user]);
 
     if (loading) {
         return (

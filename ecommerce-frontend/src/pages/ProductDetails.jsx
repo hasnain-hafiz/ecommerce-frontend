@@ -13,8 +13,7 @@ export default function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const { addToCart } = useContext(CartContext);
-  const { token } = useContext(AuthContext);
-  const { seller } = useContext(AuthContext);
+  const { user, isSeller } = useContext(AuthContext);
   const navigate = useNavigate();
 
 
@@ -125,10 +124,10 @@ export default function ProductDetails() {
           <p className="brand">{product.brand}</p>
           <p className="price">₹{product.price}</p>
           <p className="desc">{product.description}</p>
-          {seller && <p className="product-inventory">stock:{product.inventory}</p>}
+          {isSeller && <p className="product-inventory">stock:{product.inventory}</p>}
 
-          { !seller && <button className="add-btn"
-            onClick={() => { if (!token) { navigate("/auth"); return; } addToCart(product.id) }}
+          { !isSeller && <button className="add-btn"
+            onClick={() => { if (!user) { navigate("/auth"); return; } addToCart(product.id) }}
           >
             Add to Cart
           </button> }

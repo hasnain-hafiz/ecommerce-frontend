@@ -3,9 +3,9 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function GuestRoute() {
-    const { seller } = useContext(AuthContext);
+    const { isSeller, loading } = useContext(AuthContext);
 
-    return seller
-        ? <Navigate to="/seller" replace />
-        : <Outlet />;
+    if (loading) return null;
+
+    return isSeller ? <Navigate to="/seller" replace /> : <Outlet />;
 }

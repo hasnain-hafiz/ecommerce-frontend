@@ -19,6 +19,8 @@ import PrivateRoute from './routes/PrivateRoute';
 import SellerRoute from './routes/SellerRoute';
 import SellerDashboard from './pages/SellerDashboard';
 import EditProduct from './pages/EditProduct';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './routes/AdminRoute';
 
 
 
@@ -48,6 +50,11 @@ function App() {
             <Route element={<SellerRoute />}>
               <Route path="/seller" element={<SellerDashboard />} />
               <Route path="/seller/edit/:id" element={<EditProduct />} />
+            </Route>
+
+            {/* Admin */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
             </Route>
 
           </Routes>

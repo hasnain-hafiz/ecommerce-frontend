@@ -1,67 +1,50 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
+import { publicApi, privateApi, primeCsrfToken } from "../api/axios";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);       // { id, firstName, lastName, email, roles: [] }
+    const [loading, setLoading] = useState(true);  // true while we check for an existing session
 
-    const [token, setToken] = useState(
-        localStorage.getItem("token") || null
-    );
+    const hasRole = useCallback((role) => !!user?.roles?.includes(role), [user]);
+    const isSeller = hasRole("ROLE_SELLER");
+    const isAdmin = hasRole("ROLE_ADMIN");
 
-    const [seller, setSeller] = useState(
-        JSON.parse(localStorage.getItem("seller")) || false
-    );
-    
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        const storedSeller = localStorage.getItem("seller");
-
-        if (storedToken) {
-            setToken(storedToken);
-        }
-
-        if (storedSeller !== null) {
-            setSeller(JSON.parse(storedSeller));
+    const bootstrap = useCallback(async () => {
+        await primeCsrfToken();
+        try {
+            const res = await privateApi.get("/auth/me");
+            setUser(res.data.data);
+        } catch {
+            setUser(null);
+        } finally {
+            setLoading(false);
         }
     }, []);
 
-    const login = (token) => {
-        localStorage.setItem("token", token);
-        setToken(token);
-    };
+    useEffect(() => {
+        bootstrap();
 
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("seller");
+        // Fired by the axios interceptor when a refresh attempt fails.
+        const onExpired = () => setUser(null);
+        window.addEventListener("auth:expired", onExpired);
+        return () => window.removeEventListener("auth:expired", onExpired);
+    }, [bootstrap]);
 
-        setToken(null);
-        setSeller(false);
-    };
+    const login = (userData) => setUser(userData);
 
-    const sellerIn = (sellerValue) => {
-        localStorage.setItem(
-            "seller",
-            JSON.stringify(sellerValue)
-        );
-
-        setSeller(sellerValue);
-    };
-
-    const sellerOut = () => {
-        localStorage.removeItem("seller");
-        setSeller(false);
+    const logout = async () => {
+        try {
+            await publicApi.post("/auth/logout");
+        } finally {
+            setUser(null);
+        }
     };
 
     return (
         <AuthContext.Provider
-            value={{
-                token,
-                seller,
-                login,
-                logout,
-                sellerIn,
-                sellerOut
-            }}
+            value={{ user, loading, isSeller, isAdmin, hasRole, login, logout }}
         >
             {children}
         </AuthContext.Provider>
