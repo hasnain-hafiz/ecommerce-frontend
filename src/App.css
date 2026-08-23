@@ -1325,3 +1325,32 @@ form>button:disabled {
     flex: 1;
   }
 }
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.pagination-controls button {
+  background: transparent;
+  border: 0.5px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 7px 16px;
+  border-radius: var(--radius-md);
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
