@@ -11,6 +11,14 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
+    const [isSearchMode, setIsSearchMode] = useState(false);
+
+    // NEW: pagination state backing the paginated GET /product/all response.
+    // Search results (GET /product/search) are still unpaginated this
+    // phase, so pagination controls are hidden while isSearchMode is true.
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     const { logout } = useContext(AuthContext);
     const { token } = useContext(AuthContext);
     const { seller } = useContext(AuthContext);
@@ -18,23 +26,31 @@ export default function Home() {
     const navigate = useNavigate();
 
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (pageToLoad = 0) => {
         setLoading(true);
+        setIsSearchMode(false);
         try {
-            const res = await publicApi.get("/product/all");
-            setProducts(res.data.data);
-            console.log(res);
+            const res = await publicApi.get(`/product/all?page=${pageToLoad}&size=12`);
+            const pageData = res.data.data;
+            setProducts(pageData.content ?? []);
+            setTotalPages(pageData.totalPages ?? 0);
+            setPage(pageData.number ?? pageToLoad);
         }
-
         finally {
             setLoading(false);
         }
     };
 
     const searchProducts = async () => {
-        if (!search.trim()) return fetchProducts();
-        const res = await publicApi.get(`/product/search?keyword=${search}`);
-        setProducts(res.data.data);
+        if (!search.trim()) return fetchProducts(0);
+        setLoading(true);
+        try {
+            const res = await publicApi.get(`/product/search?keyword=${search}`);
+            setProducts(res.data.data);
+            setIsSearchMode(true);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleKeyDown = (e) => {
@@ -70,7 +86,7 @@ export default function Home() {
         }, []);
 
     useEffect(() => {
-        fetchProducts();
+        fetchProducts(0);
     }, []);
 
     if (loading) {
@@ -97,7 +113,7 @@ export default function Home() {
                         onKeyDown={handleKeyDown}
                     />
                     {search && (
-                        <button className="search-clear" onClick={() => { setSearch(""); fetchProducts(); }}>
+                        <button className="search-clear" onClick={() => { setSearch(""); fetchProducts(0); }}>
                             ✕
                         </button>
                     )}
@@ -129,6 +145,26 @@ export default function Home() {
                     )
                     )}
                 </div>
+
+                {/* NEW: simple pagination controls, hidden during search
+                    since /product/search doesn't return page metadata yet. */}
+                {!isSearchMode && totalPages > 1 && (
+                    <div className="pagination-controls">
+                        <button
+                            disabled={page <= 0}
+                            onClick={() => fetchProducts(page - 1)}
+                        >
+                            ‹ Prev
+                        </button>
+                        <span>Page {page + 1} of {totalPages}</span>
+                        <button
+                            disabled={page >= totalPages - 1}
+                            onClick={() => fetchProducts(page + 1)}
+                        >
+                            Next ›
+                        </button>
+                    </div>
+                )}
             </div>
 
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { privateApi } from "../api/axios";
+import { privateApi, publicApi } from "../api/axios";
 import { toast } from "react-toastify";
 import UploadImage from "../components/UploadImage";
 
@@ -11,6 +11,9 @@ export default function EditProduct() {
 
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
+    // CHANGED: fetched from the backend instead of a hardcoded list — see
+    // AddProduct.jsx for the same fix and why.
+    const [categories, setCategories] = useState([]);
 
 
     const [data, setData] = useState({
@@ -24,7 +27,17 @@ export default function EditProduct() {
 
     useEffect(() => {
         fetchProduct();
+        fetchCategories();
     }, [id]);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await publicApi.get("/category/all");
+            setCategories(res.data.data || []);
+        } catch (err) {
+            toast.error("Failed to load categories");
+        }
+    };
 
     const fetchProduct = async () => {
 
@@ -86,7 +99,14 @@ export default function EditProduct() {
                 data
             );
 
-            await UploadImage(id, files);
+            // CHANGED: previously always called UploadImage(id, files),
+            // which shows a "Select images" error toast on every
+            // metadata-only edit where the seller didn't pick new files.
+            // Now only uploads if files were actually selected.
+            if (files.length > 0) {
+                await UploadImage(id, files);
+            }
+
             toast.success(
                 "Product updated"
             );
@@ -155,13 +175,9 @@ export default function EditProduct() {
             >
                 <option value="" disabled>Select Category</option>
 
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Kitchen">Kitchen</option>
-                <option value="Decorations">Decorations</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Books">Books</option>
-                <option value="Other">Other</option>
+                {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
             </select>
 
             <input
