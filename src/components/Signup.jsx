@@ -1,13 +1,11 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { publicApi } from "../api/axios";
 
 export default function Signup() {
     const [userData, setUserData] = useState({seller: false})
-    const[seller,setSeller] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
@@ -30,8 +28,8 @@ export default function Signup() {
                     
                     const res = await publicApi.post("/auth/register", userData);
 
-                    console.log(res);
-                    login(res.data.data.token);
+                    // CHANGED (Phase 3): pass the refresh token through too.
+                    login(res.data.data.token, res.data.data.refreshToken);
                     sellerIn(res.data.data.seller);
 
                     toast.update(toastId, {
@@ -75,7 +73,6 @@ export default function Signup() {
                         setUserData(prev => ({ ...prev, firstName: e.target.value }))
                     }
                 />
-                {/* <span className="error-text">Error here</span> */}
             </div>
 
             <div className="form-group">

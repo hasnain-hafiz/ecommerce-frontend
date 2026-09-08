@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { publicApi } from "../api/axios";
 
@@ -30,8 +29,10 @@ export default function Login() {
                 try {
                     const res = await publicApi.post("/auth/authenticate", userData);
 
-                    console.log(res);
-                    login(res.data.data.token);
+                    // CHANGED (Phase 3): now also passes the refresh token
+                    // through to AuthContext so axios.js can silently renew
+                    // the (now short-lived) access token later.
+                    login(res.data.data.token, res.data.data.refreshToken);
                     sellerIn(res.data.data.seller);
                     toast.update(toastId, {
                         render: res.data.message,
@@ -43,8 +44,15 @@ export default function Login() {
                     return;
                 } catch (err) {
                     if (attempt === 2) {
+                        // CHANGED: was err.response?.data?.data, which read
+                        // the wrong field of ApiResponse ({message, data})
+                        // and would show "undefined" now that the backend
+                        // no longer echoes exception details into `data`
+                        // on a failed login (see AuthController). The
+                        // actual message ("Invalid Email or Password")
+                        // has always lived in `.message`.
                         toast.update(toastId, {
-                            render: err.response?.data?.data,
+                            render: err.response?.data?.message || "Login failed",
                             type: "error",
                             isLoading: false,
                             autoClose: 2000
@@ -74,8 +82,6 @@ export default function Login() {
                         setUserData(prev => ({ ...prev, email: e.target.value }))
                     }
                 />
-                {/* Example error */}
-                {/* <span className="error-text">Invalid email</span> */}
             </div>
 
             <div className="form-group">
@@ -89,8 +95,12 @@ export default function Login() {
                         setUserData(prev => ({ ...prev, password: e.target.value }))
                     }
                 />
-                {/* <span className="error-text">Password must be 8+ chars</span> */}
             </div>
+
+            {/* NEW (Phase 3) */}
+            <Link to="/forgot-password" className="forgot-password-link">
+                Forgot password?
+            </Link>
 
             <button className="btn-primary" disabled={isSubmitting}>
                 {isSubmitting ? "Logging in..." : "Login"}

@@ -11,12 +11,14 @@ import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 
 import { CartProvider } from './context/CartContext';
-// NEW (Phase 2b): wishlist context + page.
 import { WishlistProvider } from './context/WishlistContext';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
+// NEW (Phase 3): password reset flow.
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import GuestRoute from './routes/GuestRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import SellerRoute from './routes/SellerRoute';
@@ -29,8 +31,6 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        {/* NEW (Phase 2b): sits alongside CartProvider — both are
-            per-customer, per-session client state built the same way. */}
         <WishlistProvider>
           <BrowserRouter>
             <Routes>
@@ -42,6 +42,12 @@ function App() {
               </Route>
 
               <Route path="/product/:id" element={<ProductDetails />} />
+
+              {/* NEW (Phase 3): not gated by GuestRoute -- a logged-in
+                  user should still be able to reset their password (e.g.
+                  if they suspect their account is compromised). */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Authenticated */}
               <Route element={<PrivateRoute />}>
