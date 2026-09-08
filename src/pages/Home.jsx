@@ -125,6 +125,10 @@ export default function Home() {
                 </button>
 
                 {token ? (
+                    <button onClick={() => navigate("/wishlist")}>Wishlist</button>
+                ) : null}
+
+                {token ? (
                     <button onClick={() => navigate("/orders")}>My Orders</button>
                 ) : null}
                 {token && (
