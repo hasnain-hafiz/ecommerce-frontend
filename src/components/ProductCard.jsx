@@ -1,7 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 const API = import.meta.env.VITE_API_BASE_URL;
 // change when deployed
 
@@ -18,9 +19,30 @@ export default function ProductCard({
 
     const { token, seller } = useContext(AuthContext);
 
+    // NEW (Phase 2b): wishlist toggle, customers only.
+    const { isWishlisted, toggleWishlist } = useWishlist();
+    const wishlisted = !seller && isWishlisted(product.id);
+
     return (
 
         <div className="product-card">
+
+            {!seller && (
+                <button
+                    className={`wishlist-btn ${wishlisted ? "active" : ""}`}
+                    title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (!token) {
+                            navigate("/auth");
+                            return;
+                        }
+                        toggleWishlist(product.id);
+                    }}
+                >
+                    {wishlisted ? "♥" : "♡"}
+                </button>
+            )}
 
             <div
                 onClick={() => navigate(`/product/${product.id}`)}
@@ -39,6 +61,12 @@ export default function ProductCard({
                     <p>{product.description}</p>
 
                     <div>₹{product.price}</div>
+
+                    {product.reviewCount > 0 && (
+                        <p className="product-rating">
+                            ★ {product.averageRating?.toFixed(1)} ({product.reviewCount})
+                        </p>
+                    )}
 
                     {seller && (
                         <p>stock: {product.inventory}</p>
